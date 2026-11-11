@@ -1,0 +1,8 @@
+<section class="page-hero page-hero-compact"><div class="container"><span class="eyebrow">CONTACT</span><h1>We're here to help.</h1><p>Questions about accounts, opportunities or adding an institution? Send the platform team a message.</p></div></section>
+<section class="section"><div class="container form-layout">
+    <form class="panel form-stack" method="post" action="<?= e(pageUrl('contact')) ?>"><?= formToken() ?><input type="hidden" name="action" value="contact_message"><h2>Send us a message</h2>
+        <?php if ($currentUser === null): ?><label class="field"><span>Your name</span><input name="sender_name" maxlength="160" required></label><label class="field"><span>Email address</span><input type="email" name="sender_email" maxlength="190" required></label><?php else: ?><div class="application-review"><strong><?= e($currentUser['full_name']) ?></strong><span><?= e($currentUser['email']) ?></span></div><?php endif; ?>
+        <label class="field"><span>Subject</span><input name="subject" maxlength="180" required></label><label class="field"><span>Message</span><textarea name="message" rows="7" maxlength="5000" required></textarea></label><button class="button button-primary" type="submit">Send message</button>
+    </form>
+    <aside class="panel"><span class="eyebrow">CAMPUS2CAREER</span><h2>Supporting your next step.</h2><p class="muted">Messages are stored for the platform team to review. Email delivery is only enabled when a mail service is configured.</p><a class="text-link" href="<?= e(pageUrl('institution-request')) ?>">Request that your institution be added <span aria-hidden="true">→</span></a></aside>
+</div></section>

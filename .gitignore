@@ -1,0 +1,6 @@
+.env
+/vendor/
+/storage/
+/logs/
+/private_uploads/
+*.log

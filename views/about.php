@@ -1,0 +1,8 @@
+<section class="page-hero page-hero-compact"><div class="container"><span class="eyebrow">ABOUT CAMPUS2CAREER</span><h1>Connecting talent to opportunity.</h1><p>A practical bridge between tertiary education and meaningful work.</p></div></section>
+<section class="section"><div class="container narrow-container prose-panel">
+    <h2>Built for the transition from learning to work.</h2><p>Campus2Career helps students and recent graduates discover internships, jobs, scholarships, fellowships, training and career development opportunities. It also gives verified organizations a place to share opportunities with emerging talent.</p>
+    <h2>Designed for institutions across Ghana.</h2><p>Palm University College is the initial pilot institution. Institutions can be added to the platform without being hardcoded into its workflows.</p>
+    <h2>How opportunity review works.</h2><p>Opportunity providers submit listings as drafts. Platform administrators review submissions before they are published. Candidates can apply, save opportunities and track application status updates in their account.</p>
+    <h2>Trust and privacy.</h2><p>Account access is role-based. Application documents are stored outside the public web directory and are only served after authorization checks. Email verification and password reset links require a configured mail service.</p>
+    <div class="prose-actions"><a class="button button-primary" href="<?= e(pageUrl('opportunities')) ?>">Explore opportunities</a><a class="button button-outline" href="<?= e(pageUrl('register')) ?>">Create your account</a></div>
+</div></section>

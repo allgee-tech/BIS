@@ -1,0 +1,15 @@
+<section class="page-hero page-hero-compact"><div class="container"><span class="eyebrow">APPLICATION</span><h1>Apply for <?= e($opportunity['title']) ?></h1><p><?= e($opportunity['organization_name'] ?? 'Institution opportunity') ?></p></div></section>
+<section class="section"><div class="container form-layout">
+    <form class="panel form-stack" method="post" enctype="multipart/form-data" action="<?= e(pageUrl('apply', ['id' => (int) $opportunity['id']])) ?>">
+        <?= formToken() ?><input type="hidden" name="action" value="submit_application"><input type="hidden" name="opportunity_id" value="<?= e($opportunity['id']) ?>">
+        <h2>Review your application</h2><p class="form-intro">Your profile details and attached documents will be shared with this opportunity's owner.</p>
+        <div class="application-review"><strong><?= e($currentUser['full_name']) ?></strong><span><?= e($currentUser['email']) ?></span></div>
+        <label class="field"><span>Cover letter <small>(optional)</small></span><textarea name="cover_letter" rows="8" maxlength="10000" placeholder="Tell the organization why you are interested and what you can contribute."></textarea></label>
+        <?php if ($latestCv !== null): ?><label class="field"><span>Saved CV</span><select name="existing_cv_id"><option value="<?= e($latestCv['id']) ?>"><?= e($latestCv['original_name']) ?> (use saved CV)</option><option value="">Upload a new CV instead</option></select></label><?php else: ?><input type="hidden" name="existing_cv_id" value=""><?php endif; ?>
+        <label class="field"><span>Upload a new CV <b aria-hidden="true"><?= $latestCv === null ? '*' : '' ?></b></span><input type="file" name="cv" <?= $latestCv === null ? 'required' : '' ?> accept=".pdf,.doc,.docx"><small>PDF, DOC or DOCX, up to 5 MB. <?= $latestCv !== null ? 'Leave blank to use your saved CV.' : '' ?></small></label>
+        <label class="field"><span>Supporting documents <small>(optional, up to 3)</small></span><input type="file" name="supporting_documents[]" multiple accept=".pdf,.doc,.docx"><small>Each document must be PDF, DOC or DOCX and no larger than 5 MB.</small></label>
+        <label class="checkbox-field"><input type="checkbox" name="confirm_review" value="1" required><span>I confirm these details are accurate and authorize the opportunity provider to review my application.</span></label>
+        <button class="button button-primary" type="submit">Submit application</button>
+    </form>
+    <aside class="panel"><span class="eyebrow">BEFORE YOU SUBMIT</span><h2>Take a final look.</h2><p>Check that your CV is current and your cover letter is tailored to this opportunity.</p><dl class="detail-list"><div><dt>Deadline</dt><dd><?= $opportunity['application_deadline'] ? e(date('M j, Y', strtotime($opportunity['application_deadline']))) : 'Not specified' ?></dd></div><div><dt>Application type</dt><dd>Campus2Career application</dd></div></dl><a class="text-link" href="<?= e(pageUrl('opportunity', ['id' => (int) $opportunity['id']])) ?>">Review opportunity details</a></aside>
+</div></section>
