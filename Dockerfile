@@ -16,6 +16,7 @@ RUN apt-get update \
 
 WORKDIR /var/www/html
 
+COPY . /var/www/html
 COPY railway-start.sh /usr/local/bin/railway-start
 RUN chmod +x /usr/local/bin/railway-start
 
