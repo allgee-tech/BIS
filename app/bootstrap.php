@@ -18,7 +18,7 @@ ini_set('session.cookie_samesite', 'Lax');
 $forwardedProto = strtolower(trim(explode(',', (string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''), 2)[0]));
 $isRailwayHttps = !empty($_SERVER['HTTP_X_RAILWAY_EDGE']) && $forwardedProto === 'https';
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $isRailwayHttps;
-if (strtolower((string) appConfig('APP_ENV', 'development')) === 'production' && !$isHttps) {
+if (appEnvironment() === 'production' && !$isHttps) {
     http_response_code(400);
     exit('HTTPS must be enabled for the production Campus2Career application.');
 }
@@ -56,7 +56,8 @@ function e(mixed $value): string
 
 function basePath(): string
 {
-    $configured = trim((string) appConfig('APP_BASE_PATH', '/BIS'));
+    $default = appEnvironment() === 'production' ? '' : '/BIS';
+    $configured = trim((string) appConfig('APP_BASE_PATH', $default));
     return $configured === '' || $configured === '/' ? '' : '/' . trim($configured, '/');
 }
 

@@ -24,6 +24,12 @@ function appConfig(string $name, ?string $default = null): ?string
     return $value === false ? $default : $value;
 }
 
+function appEnvironment(): string
+{
+    $default = getenv('RAILWAY_ENVIRONMENT_NAME') !== false ? 'production' : 'development';
+    return strtolower((string) appConfig('APP_ENV', $default));
+}
+
 function database(): PDO
 {
     static $connection;
@@ -31,20 +37,23 @@ function database(): PDO
         return $connection;
     }
 
-    $host = appConfig('DB_HOST', '127.0.0.1');
-    $port = appConfig('DB_PORT', '3306');
-    $name = appConfig('DB_NAME', 'BIS');
-    $user = appConfig('DB_USER', 'root');
+    $host = appConfig('DB_HOST', appConfig('MYSQLHOST', '127.0.0.1'));
+    $port = appConfig('DB_PORT', appConfig('MYSQLPORT', '3306'));
+    $name = appConfig('DB_NAME', appConfig('MYSQLDATABASE', 'BIS'));
+    $user = appConfig('DB_USER', appConfig('MYSQLUSER', 'root'));
     $password = getenv('DB_PASSWORD');
+    if ($password === false) {
+        $password = getenv('MYSQLPASSWORD');
+    }
 
     if ($password === false) {
-        throw new RuntimeException('Set DB_PASSWORD in the private .env file for this MySQL installation.');
+        throw new RuntimeException('Set DB_PASSWORD or MYSQLPASSWORD for this MySQL installation.');
     }
-    if ($name !== 'BIS') {
+    if (appEnvironment() !== 'production' && $name !== 'BIS') {
         throw new RuntimeException('This local application is configured to use the existing BIS database.');
     }
-    if (strtolower((string) appConfig('APP_ENV', 'development')) === 'production' && ($user === 'root' || $password === '')) {
-        throw new RuntimeException('Production requires a dedicated MySQL account with a non-empty password.');
+    if (appEnvironment() === 'production' && $password === '') {
+        throw new RuntimeException('Production requires a non-empty MySQL password.');
     }
 
     $connection = new PDO(
