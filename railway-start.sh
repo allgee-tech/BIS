@@ -19,4 +19,6 @@ if [ -n "$private_storage_path" ]; then
     chmod 750 "$private_storage_path"
 fi
 
+php /var/www/html/bin/migrate.php
+
 exec apache2-foreground
