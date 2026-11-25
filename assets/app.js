@@ -11,6 +11,50 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    var welcomeForm = document.querySelector('[data-welcome-form]');
+    if (welcomeForm) {
+        var welcomeChoices = welcomeForm.querySelectorAll('input[type="radio"][name="page"]');
+        var welcomeContinue = welcomeForm.querySelector('[data-welcome-continue]');
+        var welcomeType = welcomeForm.querySelector('[data-welcome-type]');
+        var welcomeEmployer = welcomeForm.querySelector('[data-welcome-employer]');
+
+        welcomeContinue.disabled = true;
+        welcomeChoices.forEach(function (choice) {
+            choice.addEventListener('change', function () {
+                welcomeContinue.disabled = false;
+                welcomeForm.querySelectorAll('.welcome-choice').forEach(function (card) {
+                    var selected = card.contains(choice) && choice.checked;
+                    card.classList.toggle('is-selected', selected);
+                });
+                welcomeType.value = choice === welcomeEmployer ? 'employer' : '';
+                welcomeContinue.innerHTML = choice === welcomeEmployer
+                    ? 'Continue as an organization <span aria-hidden="true">→</span>'
+                    : choice.value === 'register'
+                        ? 'Create my account <span aria-hidden="true">→</span>'
+                        : 'Explore opportunities <span aria-hidden="true">→</span>';
+            });
+        });
+
+        var welcomeStage = document.querySelector('[data-welcome-stage]');
+        var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (welcomeStage && !reducedMotion) {
+            welcomeStage.addEventListener('pointermove', function (event) {
+                if (event.pointerType === 'touch') {
+                    return;
+                }
+                var bounds = welcomeStage.getBoundingClientRect();
+                var x = (event.clientX - bounds.left) / bounds.width;
+                var y = (event.clientY - bounds.top) / bounds.height;
+                welcomeStage.style.setProperty('--pointer-x', (x * 100) + '%');
+                welcomeStage.style.setProperty('--pointer-y', (y * 100) + '%');
+            });
+            welcomeStage.addEventListener('pointerleave', function () {
+                welcomeStage.style.setProperty('--pointer-x', '50%');
+                welcomeStage.style.setProperty('--pointer-y', '50%');
+            });
+        }
+    }
+
     var registerForm = document.querySelector('[data-role-toggle]');
     if (registerForm) {
         var role = registerForm.querySelector('#account-role');

@@ -18,6 +18,26 @@ Campus2Career is a PHP and MySQL career opportunity platform for students, gradu
 
 The local `.env` must retain `DB_NAME=BIS` and `APP_BASE_PATH=/BIS`. The private document directory defaults to `E:\New folder\BIS-private-uploads`, outside the public web root. Set `C2C_PRIVATE_STORAGE_PATH` to another private writable directory if needed.
 
+## Deploy to Railway
+
+This repository includes a Dockerfile for a PHP 8.5 Apache service. It enables `mod_rewrite`, allows the existing `.htaccess` rules, installs the required PHP extensions, and listens on Railway's `PORT` value. The Railway start script also prepares the configured private upload directory for Apache.
+
+1. Push the project to a Git repository and create a Railway service from it. Railway will detect the root `Dockerfile` and build the web service.
+2. Add a Railway MySQL service. Create/use a database named `BIS`; `app/config.php` currently requires that exact name. Set the web service's `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` from the MySQL service variables. Use Railway variable references rather than copying credentials into source files.
+3. Add these variables to the web service:
+
+   ```text
+   APP_ENV=production
+   APP_BASE_PATH=/
+   C2C_PRIVATE_STORAGE_PATH=/data/private-uploads
+   ```
+
+   `APP_BASE_PATH=/` resolves to an empty path because Railway serves the app at the domain root. Add any mail settings separately if email delivery is configured.
+4. Attach a Railway volume to the web service at `/data`. Uploaded CVs and application documents are stored under `/data/private-uploads` and need persistent storage.
+5. After the MySQL service is ready, run `php bin/migrate.php` once from the web service's shell. To create the initial administrator, set `C2C_ADMIN_EMAIL`, `C2C_ADMIN_NAME`, and `C2C_ADMIN_PASSWORD`, run `php bin/create-admin.php`, then remove those setup variables.
+
+The Railway edge forwards `X-Forwarded-Proto: https`; `app/bootstrap.php` recognizes it so production HTTPS checks and secure session cookies work behind Railway's TLS proxy. The existing `.env` is excluded from the Docker build context and should not be committed. If you need existing local data, export and import it into Railway MySQL separately; the migrations do not copy the local database contents.
+
 ## First platform administrator
 
 No administrator is created by the web registration form. Set `C2C_ADMIN_EMAIL`, `C2C_ADMIN_NAME`, and a unique password of 12–72 bytes in the private `.env`, then run:

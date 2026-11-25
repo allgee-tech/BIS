@@ -1,7 +1,7 @@
 <section class="hero">
     <div class="container hero-grid">
         <div class="hero-copy">
-            <span class="eyebrow"><span class="eyebrow-dot"></span> A better start to your career</span>
+            <span class="eyebrow"></span><b>A better start to your career</b>
             <h1>Your Future Starts With the <em>Right Opportunity.</em></h1>
             <p>Discover internships, jobs, scholarships, graduate programmes and career development opportunities designed to move your career forward.</p>
             <div class="hero-actions">
@@ -25,7 +25,6 @@
                 <div class="art-steps"><span class="step-number">03</span><span>Make your move</span></div>
                 <div class="art-decoration"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
             </div>
-            <div class="floating-note"><span class="floating-icon">↗</span><span><strong><?= e($stats['opportunities']) ?></strong><small>open opportunities</small></span></div>
         </div>
     </div>
 </section>

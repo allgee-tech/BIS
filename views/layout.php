@@ -14,11 +14,12 @@ $flashMessage = takeFlash();
     <title><?= e($pageTitle) ?> · Campus2Career</title>
     <link rel="stylesheet" href="<?= e(basePath()) ?>/assets/style.css">
 </head>
-<body class="<?= $activePage === 'dashboard' ? 'dashboard-page' : '' ?>">
+<body class="<?= $activePage === 'dashboard' ? 'dashboard-page' : ($activePage === 'welcome' ? 'welcome-page' : '') ?>">
+<?php if ($activePage !== 'welcome'): ?>
 <header class="site-header">
     <div class="container header-inner">
         <a class="brand" href="<?= e(pageUrl('home')) ?>" aria-label="Campus2Career home">
-            <span class="brand-mark">C2</span><span class="brand-name">Campus<span>2</span>Career<small>CONNECTING TALENT TO OPPORTUNITY</small></span>
+            <img class="brand-logo" src="<?= e(basePath()) ?>/assets/campus2career-logo.png" width="1056" height="181" alt="Campus2Career — Learn, Apply, Grow">
         </a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
         <nav class="main-nav" id="main-nav" aria-label="Main navigation">
@@ -42,21 +43,24 @@ $flashMessage = takeFlash();
         </nav>
     </div>
 </header>
+<?php endif; ?>
 <main id="main-content">
     <?php if ($flashMessage !== null): ?>
         <div class="container"><div class="alert alert-<?= e($flashMessage['type'] ?? 'success') ?>" role="status"><?= e($flashMessage['message'] ?? '') ?></div></div>
     <?php endif; ?>
     <?= $content ?>
 </main>
+<?php if ($activePage !== 'welcome'): ?>
 <footer class="site-footer">
     <div class="container footer-grid">
-        <div><a class="brand footer-brand" href="<?= e(pageUrl('home')) ?>"><span class="brand-mark">C2</span><span class="brand-name">Campus<span>2</span>Career<small>CONNECTING TALENT TO OPPORTUNITY</small></span></a><p>Helping students and graduates move from learning to meaningful work.</p></div>
+        <div><a class="brand footer-brand" href="<?= e(pageUrl('home')) ?>" aria-label="Campus2Career home"><img class="brand-logo" src="<?= e(basePath()) ?>/assets/campus2career-logo.png" width="1056" height="181" alt="Campus2Career — Learn, Apply, Grow"></a><p>Helping students and graduates move from learning to meaningful work.</p></div>
         <div><strong>Explore</strong><a href="<?= e(pageUrl('opportunities')) ?>">Opportunities</a><a href="<?= e(pageUrl('resources')) ?>">Career resources</a></div>
         <div><strong>Campus2Career</strong><a href="<?= e(pageUrl('about')) ?>">About us</a><a href="<?= e(pageUrl('institution-request')) ?>">Add an institution</a></div>
         <div><strong>Get in touch</strong><a href="<?= e(pageUrl('contact')) ?>">Contact us</a><?php if ($currentUser === null): ?><a href="<?= e(pageUrl('login')) ?>">Sign in</a><a href="<?= e(pageUrl('register')) ?>">Create an account</a><?php else: ?><a href="<?= e(pageUrl('dashboard')) ?>">Your dashboard</a><?php endif; ?></div>
     </div>
     <div class="container footer-bottom"><span>© <?= e(date('Y')) ?> Campus2Career</span><span>Built for Ghana's next generation of talent.</span></div>
 </footer>
+<?php endif; ?>
 <script src="<?= e(basePath()) ?>/assets/app.js" defer></script>
 </body>
 </html>

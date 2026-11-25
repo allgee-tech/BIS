@@ -1,0 +1,9 @@
+.git
+.env
+.env.*
+!.env.example
+vendor/
+storage/
+private_uploads/
+BIS-private-uploads/
+*.log

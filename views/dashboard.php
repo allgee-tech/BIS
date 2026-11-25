@@ -1,8 +1,7 @@
 <div class="career-dashboard">
     <aside class="dashboard-sidebar" aria-label="Dashboard navigation">
         <a class="dashboard-brand" href="<?= e(pageUrl('home')) ?>" aria-label="Campus2Career home">
-            <span class="dashboard-brand-mark">C2</span>
-            <span>Campus<span>2</span>Career<small>YOUR CAREER SPACE</small></span>
+            <img class="dashboard-brand-logo" src="<?= e(basePath()) ?>/assets/campus2career-logo.png" width="1056" height="181" alt="Campus2Career — Learn, Apply, Grow">
         </a>
         <span class="sidebar-label">WORKSPACE</span>
         <nav class="dashboard-nav" aria-label="Student">

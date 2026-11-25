@@ -4,9 +4,9 @@ declare(strict_types=1);
 require_once __DIR__ . '/app/bootstrap.php';
 require_once __DIR__ . '/app/actions.php';
 
-$page = is_string($_GET['page'] ?? null) ? $_GET['page'] : 'home';
+$page = is_string($_GET['page'] ?? null) ? $_GET['page'] : 'welcome';
 $allowedPages = [
-    'home','about','login','register','forgot-password','reset-password','verify-email',
+    'welcome','home','about','login','register','forgot-password','reset-password','verify-email',
     'opportunities','opportunity','apply','applications','saved','dashboard','employer',
     'opportunity-form','profile','notifications','resources','resource','admin','institution',
     'institution-request','contact','document',
@@ -78,6 +78,12 @@ try {
         header('Content-Disposition: attachment; filename="' . str_replace(['"',"\r","\n"], '', basename($document['original_name'])) . '"; filename*=UTF-8\'\'' . rawurlencode($document['original_name']));
         header('X-Content-Type-Options: nosniff');
         readfile($path);
+        exit;
+    }
+
+    if ($page === 'welcome') {
+        $pageTitle = 'Welcome to Campus2Career';
+        render('welcome', compact('pageTitle','activePage','currentUser','unreadNotifications'));
         exit;
     }
 
