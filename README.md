@@ -47,7 +47,28 @@ No administrator is created by the web registration form. Set `C2C_ADMIN_EMAIL`,
 
 The command refuses to create another administrator once one exists. Remove the three setup values from `.env` after the initial account is created. Sign in through the site and use the admin dashboard to verify organizations, review opportunities, manage institutions, resources, reports and announcements.
 
+## Grant administrator access to an existing account
+
+To grant administrator access to an existing active account, set the exact email in the private `.env` and run:
+
+```powershell
+C2C_GRANT_ADMIN_EMAIL=deiyeshua05@gmail.com
+& 'E:\New folder\php\php.exe' .\bin\grant-admin.php
+```
+
+The command is idempotent, refuses suspended or unknown accounts, and writes an audit event. Remove `C2C_GRANT_ADMIN_EMAIL` from `.env` after it succeeds.
+
 ## User workflows
+
+## Populate local demo data
+
+After MySQL is running and the migrations have been applied, populate a repeatable demo environment with:
+
+```powershell
+& 'E:\New folder\php\php.exe' .\bin\seed-demo.php
+```
+
+This creates sample student, graduate, employer and institution-admin accounts plus institutions, opportunities, applications, reports, announcements, resources, a contact message and an institution request. It never creates or changes an administrator account. The seeded account credentials are printed by the command; do not use them in production.
 
 - Students and graduates register with an optional institution, complete their academic and career profile, browse and save opportunities, apply, upload private documents, and track status changes.
 - Employers register with an organization profile. Listings remain drafts until submitted for review, then an administrator approves and publishes them. Organization owners can add representatives who already have active employer accounts.

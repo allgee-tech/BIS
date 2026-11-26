@@ -410,6 +410,7 @@ function fetchAdminData(PDO $pdo): array
         'Published opportunities' => (int) $pdo->query("SELECT COUNT(*) FROM c2c_opportunities WHERE status = 'published' AND (application_deadline IS NULL OR application_deadline >= CURRENT_DATE)")->fetchColumn(),
         'Pending opportunities' => (int) $pdo->query("SELECT COUNT(*) FROM c2c_opportunities WHERE status = 'pending_review'")->fetchColumn(),
         'Applications' => (int) $pdo->query('SELECT COUNT(*) FROM c2c_applications')->fetchColumn(),
+        'Open reports' => (int) $pdo->query("SELECT COUNT(*) FROM c2c_reports WHERE status = 'open'")->fetchColumn(),
     ];
     $pending = $pdo->query(
         publicOpportunitySelect() . " WHERE p.status = 'pending_review' ORDER BY p.created_at ASC LIMIT 50"
@@ -431,11 +432,31 @@ function fetchAdminData(PDO $pdo): array
     $institutionRequests = $pdo->query(
         "SELECT * FROM c2c_institution_requests WHERE status = 'pending' ORDER BY created_at ASC LIMIT 100"
     )->fetchAll();
+    $reportStats = [];
+    foreach (['open', 'reviewed', 'dismissed'] as $reportStatus) {
+        $reportStats[$reportStatus] = 0;
+    }
+    $reportStatusRows = $pdo->query('SELECT status, COUNT(*) AS total FROM c2c_reports GROUP BY status')->fetchAll();
+    foreach ($reportStatusRows as $reportStatusRow) {
+        $reportStats[(string) $reportStatusRow['status']] = (int) $reportStatusRow['total'];
+    }
     $reports = $pdo->query(
-        "SELECT r.id, r.opportunity_id, r.reason, r.created_at, p.title, u.email AS reporter_email
+        "SELECT r.id, r.opportunity_id, r.reason, r.status, r.created_at, r.reviewed_at,
+                p.title, p.status AS opportunity_status, u.email AS reporter_email,
+                reviewer.full_name AS reviewer_name
          FROM c2c_reports r INNER JOIN c2c_opportunities p ON p.id = r.opportunity_id
          LEFT JOIN c2c_users u ON u.id = r.reporter_user_id
+         LEFT JOIN c2c_users reviewer ON reviewer.id = r.reviewed_by_user_id
          WHERE r.status = 'open' ORDER BY r.created_at ASC LIMIT 100"
+    )->fetchAll();
+    $reportHistory = $pdo->query(
+        "SELECT r.id, r.opportunity_id, r.reason, r.status, r.created_at, r.reviewed_at,
+                p.title, p.status AS opportunity_status, u.email AS reporter_email,
+                reviewer.full_name AS reviewer_name
+         FROM c2c_reports r INNER JOIN c2c_opportunities p ON p.id = r.opportunity_id
+         LEFT JOIN c2c_users u ON u.id = r.reporter_user_id
+         LEFT JOIN c2c_users reviewer ON reviewer.id = r.reviewed_by_user_id
+         WHERE r.status <> 'open' ORDER BY r.reviewed_at DESC, r.id DESC LIMIT 100"
     )->fetchAll();
     $audit = $pdo->query(
         'SELECT a.id, a.actor_user_id, a.action_key, a.entity_type, a.entity_id, a.after_data, a.created_at,
@@ -454,7 +475,7 @@ function fetchAdminData(PDO $pdo): array
     $categories = $pdo->query('SELECT id, name, slug, is_active FROM c2c_opportunity_categories ORDER BY sort_order, name')->fetchAll();
     $resources = $pdo->query('SELECT id, title, category, summary, content, is_published FROM c2c_resources ORDER BY created_at DESC LIMIT 100')->fetchAll();
 
-    return compact('stats','pending','approved','published','organizations','users','institutions','allCategories','categories','institutionRequests','reports','audit','announcements','contactMessages','resources');
+    return compact('stats','pending','approved','published','organizations','users','institutions','allCategories','categories','institutionRequests','reports','reportStats','reportHistory','audit','announcements','contactMessages','resources');
 }
 
 function fetchUnreadNotificationCount(PDO $pdo, int $userId): int
